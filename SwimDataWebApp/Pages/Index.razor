@@ -1,0 +1,257 @@
+﻿@page "/"
+
+@using SwimDataWebApp.Data
+@inject SwimDataService SwimDataService
+
+
+@if (aSwimDataRecord == null)
+{
+    <EditForm Model="@_filterSwimRecord" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <p>
+            <label>
+                Course:
+                <InputSelect type="submit" @bind-Value="_filterSwimRecord.Course">
+                    <option value="">Select Course ...</option>
+                    @foreach (var aCourse in swimDataRecords.GroupBy(x => x.Course))
+                        {
+                        <option value="@aCourse.Key">@aCourse.Key</option>
+                        }
+                    /**/
+                    /**/
+                    /**/
+                    /**/
+                    /**/
+                    /**/
+                </InputSelect>
+            </label>
+        </p>
+        <p>
+            <label>
+                Gender:
+                <InputSelect type="submit" @bind-Value="_filterSwimRecord.Gender">
+                    <option value="">Select Gender ...</option>
+                    @foreach (var aGender in swimDataRecords.GroupBy(x => x.Gender))
+                        {
+                        <option value="@aGender.Key">@aGender.Key</option>
+                        }
+                    /**/
+                    /**/
+                    /**/
+                    /**/
+                    /**/
+                    /**/
+                </InputSelect>
+            </label>
+        </p>
+
+        <p>
+            <label>
+                Age Group:
+                <InputSelect @bind-Value="_filterSwimRecord.AgeGroup">
+                    <option value="">Select Age Group ...</option>
+                    @foreach (var aAgeGroup in swimDataRecords.GroupBy(x => x.AgeGroup))
+                        {
+                        <option value="@aAgeGroup.Key">@aAgeGroup.Key</option>
+                        }
+                    /**/
+                    /**/
+                    /**/
+                    /**/
+                    /**/
+                    /**/
+                </InputSelect>
+            </label>
+        </p>
+        <button type="submit">Fetch Data</button>
+    </EditForm>
+    <br />
+    <p><em>Select Course, Gender and Age Group ...</em></p>
+}
+else
+{
+
+    <button @onclick="Reset">@($"{_filterSwimRecord.Course} - {_filterSwimRecord.Gender} {_filterSwimRecord.AgeGroup} (click to change)")</button>
+    <p />
+    <label>
+        B
+        <input type="checkbox" @bind="@_showB" /><span>&nbsp;&nbsp;</span>
+    </label>
+    <label>
+        BB
+        <input type="checkbox" @bind="@_showBB" /><span>&nbsp;&nbsp;</span>
+    </label>
+    <label>
+        A
+        <input type="checkbox" @bind="@_showA" /><span>&nbsp;&nbsp;</span>
+    </label>
+    <label>
+        AA
+        <input type="checkbox" @bind="@_showAA" /><span>&nbsp;&nbsp;</span>
+    </label>
+    <label>
+        AAA
+        <input type="checkbox" @bind="@_showAAA" /><span>&nbsp;&nbsp;</span>
+    </label>
+    <label>
+        AAAA
+        <input type="checkbox" @bind="@_showAAAA" /><span>&nbsp;&nbsp;</span>
+    </label>
+    <p />
+
+    <p />
+    <label>
+        Free
+        <input type="checkbox" @bind="@_showFree" /><span>&nbsp;&nbsp;</span>
+    </label>
+    <label>
+        Back
+        <input type="checkbox" @bind="@_showBack" /><span>&nbsp;&nbsp;</span>
+    </label>
+    <label>
+        Breast
+        <input type="checkbox" @bind="@_showBreast" /><span>&nbsp;&nbsp;</span>
+    </label>
+    <label>
+        Fly
+        <input type="checkbox" @bind="@_showFly" /><span>&nbsp;&nbsp;</span>
+    </label>
+    <label>
+        IM
+        <input type="checkbox" @bind="@_showIM" /><span>&nbsp;&nbsp;</span>
+    </label>
+    <p />
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Event</th>
+                @if (_showB)
+                {
+                    <th>B</th>
+                }
+                @if (_showBB)
+                {
+                    <th>BB</th>
+                }
+                @if (_showA)
+                {
+                    <th>A</th>
+                }
+                @if (_showAA)
+                {
+                    <th>AA</th>
+                }
+                @if (_showAAA)
+                {
+                    <th>AAA</th>
+                }
+                @if (_showAAAA)
+                {
+                    <th>AAAA</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (SwimDataRecord aRecord in aSwimDataRecord)
+            {
+                string eventName = aRecord.Event.Split(" ").Last();
+                bool showRow = false;
+                switch (eventName)
+                {
+                    case "Free":
+                        if (_showFree) showRow = true;
+                        break;
+                    case "Back":
+                        if (_showBack) showRow = true;
+                        break;
+                    case "Breast":
+                        if (_showBreast) showRow = true;
+                        break;
+                    case "Fly":
+                        if (_showFly) showRow = true;
+                        break;
+                    case "IM":
+                        if (_showIM) showRow = true;
+                        break;
+                    default:
+                        break;
+                }
+                if (showRow)
+                {
+                    <tr>
+                        <td>@aRecord.Event</td>
+                        @if (_showB)
+                        {
+                            <td>@aRecord.B</td>
+                        }
+                        @if (_showBB)
+                        {
+                            <td>@aRecord.BB</td>
+                        }
+                        @if (_showA)
+                        {
+                            <td>@aRecord.A</td>
+                        }
+                        @if (_showAA)
+                        {
+                            <td>@aRecord.AA</td>
+                        }
+                        @if (_showAAA)
+                        {
+                            <td>@aRecord.AAA</td>
+                        }
+                        @if (_showAAAA)
+                        {
+                            <td>@aRecord.AAAA</td>
+                        }
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private SwimDataRecord[] swimDataRecords;
+
+    private SwimDataRecord[] aSwimDataRecord;
+
+    protected override async Task OnInitializedAsync()
+    {
+        swimDataRecords = await SwimDataService.GetSwimDataAsync();
+    }
+
+    private SwimDataRecord _filterSwimRecord = new SwimDataRecord();
+
+    private void HandleValidSubmit()
+    {
+        var aFilterResult = swimDataRecords.Where(x =>
+            x.Course == _filterSwimRecord.Course &&
+            x.Gender == _filterSwimRecord.Gender &&
+            x.AgeGroup == _filterSwimRecord.AgeGroup
+            ).ToArray();
+
+        if (aFilterResult.Count() > 0) aSwimDataRecord = aFilterResult;
+    }
+
+    private bool _showB { get; set; } = true;
+    private bool _showBB { get; set; } = true;
+    private bool _showA { get; set; } = true;
+    private bool _showAA { get; set; } = true;
+    private bool _showAAA { get; set; } = true;
+    private bool _showAAAA { get; set; } = true;
+
+    private bool _showFree { get; set; } = true;
+    private bool _showBack { get; set; } = true;
+    private bool _showBreast { get; set; } = true;
+    private bool _showFly { get; set; } = true;
+    private bool _showIM { get; set; } = true;
+
+    private void Reset()
+    {
+        aSwimDataRecord = null;
+    }
+}
+

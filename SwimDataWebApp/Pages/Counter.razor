@@ -1,0 +1,24 @@
+﻿@page "/counter"
+
+<h3>Two-way Data Binding</h3>
+
+    Enter your name:
+<input type="text" @bind=@Name />
+<br />
+<br />
+    Have you try the Blazor?
+<input type="checkbox" @bind="@IsTry" />
+<br />
+<br />
+<br />
+
+<p><b>Summary</b></p>
+    You have entered:@Name
+    <br />
+    Try Blazor: @(IsTry ? "Yes" : "No")
+
+
+@functions {
+    public string Name { get; set; }
+    public bool IsTry { get; set; }
+}  
